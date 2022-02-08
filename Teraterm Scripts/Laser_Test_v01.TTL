@@ -1,0 +1,1200 @@
+; PIC Test Macro -> Runs Under Tera-Term at 115200bps
+; CG - 2009-2-11
+; Test Requires:
+;	Serial Connection to PIC RS-232 Port
+;
+; Test Performs:
+;	Confirms Communication to the PIC
+;	Test Laser Circuitry State Tables
+;	Reports any Errors
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; START TEST
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:init
+
+timeout = 5
+
+clearscreen 1
+
+Camera = 'UNKNOWN'
+IMU = 'UNKNOWN'
+Laser = 'UNKNOWN'
+Channel = 'UNKNOWN'
+
+Report = '00M Not Enabled = '
+Report1 = '00N Laser Off = '
+Report2 = '00O Shutter Closed = '
+Temp0 = 'UNKNOWN'
+Temp1 = 'UNKNOWN'
+Temp2 = 'UNKNOWN'
+Temp3 = 'UNKNOWN'
+Temp4 = 'UNKNOWN'
+Temp5 = 'UNKNOWN'
+
+;goto Shutter_Wait
+
+sendln '*00L'
+
+waitln 'KJ-XXX-HD A'
+if result = 0 goto No_Comm
+
+waitln 'PIC'
+if result = 0 goto No_Comm
+
+waitln 'EO SONY HD' 'EO SONY 980'
+if result = 0 goto No_Comm
+if result = 1 Camera = 'HD'
+if result = 2 Camera = '980'
+
+waitln 'IMU CLOUDCAP' 'IMU AD'
+if result = 0 goto No_Comm
+if result = 1 IMU = 'CLOUD'
+if result = 2 IMU = 'AD'
+
+waitln 'LASER EXTERNAL' 'LASER PIC'
+if result = 0 goto No_Comm
+if result = 1 Laser = 'EXT'
+if result = 2 Laser = 'PIC'
+
+waitln '980 VIDEO' 'VBS CHANNEL' 'Y CHANNEL'
+if result = 0 goto No_Comm
+if result = 1 Channel = '980'
+if result = 2 Channel = 'VBS'
+if result = 3 Channel = 'Y'
+
+mpause 100
+
+sendln '*01D1'
+waitln 'D=1'
+if result = 0 goto No_Comm
+sendln '*00D'
+waitln 'D=1'
+if result = 0 goto No_Comm
+
+strcompare Laser 'EXT'
+if result = 0 goto PIC_Laser
+
+:Test_Laser
+
+;;Circuit Enable Wait Table
+
+sendln '*00M'
+recvln
+recvln
+strcompare inputstr 'M=0'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+call Confirm_Enable_State
+strconcat Report Confirm
+
+strconcat Report #13#10'00M Enabled = '
+
+sendln
+sendln '*90F'
+waitln 'Force Circ Enable Fault'
+sendln
+
+sendln '*00M'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=2'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+call Confirm_Enable_State
+strconcat Report Confirm
+
+strconcat Report #13#10'01M0 Not Enabled = '
+
+sendln
+
+sendln '*01M0'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=0'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+call Confirm_Enable_State
+strconcat Report Confirm
+
+strconcat Report #13#10'01M0 Enabled = '
+
+sendln
+sendln '*90F'
+waitln 'Force Circ Enable Fault'
+sendln
+
+sendln '*01M0'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=2'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+call Confirm_Enable_State
+strconcat Report Confirm
+
+strconcat Report #13#10'01M1 Laser Off / Shutter Closed = '
+
+sendln
+
+sendln '*01M1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=1'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+call Confirm_Laser_State
+strconcat Report Confirm
+
+sendln
+sendln '*01M0'
+waitln 'M=0'
+sendln '*00M'
+waitln 'M=0'
+sendln
+
+sendln Report
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sendln '*00N'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=0'
+if result = 0 then
+  ;;True
+  Temp0 = 'Correct'
+else
+  ;;False
+  Temp0 = inputstr
+endif
+
+sendln
+
+sendln '*01N0'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=0'
+if result = 0 then
+  ;;True
+  Temp1 = 'Correct'
+else
+  ;;False
+  Temp1 = inputstr
+endif
+
+sendln
+
+sendln '*01N1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=5'
+if result = 0 then
+  ;;True
+  Temp2 = 'Correct'
+else
+  ;;False
+  Temp2 = inputstr
+endif
+
+sendln
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sendln '*01M0'
+waitln 'M=0'
+sendln '*00M'
+waitln 'M=0'
+sendln
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sendln '*00O'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=0'
+if result = 0 then
+  ;;True
+  Temp3 = 'Correct'
+else
+  ;;False
+  Temp3 = inputstr
+endif
+
+sendln
+
+sendln '*01O0'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=0'
+if result = 0 then
+  ;;True
+  Temp4 = 'Correct'
+else
+  ;;False
+  Temp4 = inputstr
+endif
+
+sendln
+
+sendln '*01O1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=6'
+if result = 0 then
+  ;;True
+  Temp5 = 'Correct'
+else
+  ;;False
+  Temp5 = inputstr
+endif
+
+messagebox 'Open Shutter' 'Circuit Enable Wait State'
+
+strconcat Report #13#10'01M1 Laser Off / Shutter Open = '
+
+sendln
+
+sendln '*01M1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=4'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+messagebox 'Power On Laser and Shutter Open' 'Circuit Enable Wait State'
+
+strconcat Report #13#10'01M1 Laser On / Shutter Open = '
+
+sendln
+
+sendln '*01M1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=3'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+strconcat Report1 Temp0
+strconcat Report1 #13#10'00N Laser On = '
+
+sendln
+
+sendln '*00N'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=2'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report1 #13#10'01N0 Laser Off = '
+strconcat Report1 Temp1
+strconcat Report1 #13#10'01N0 Laser On = '
+
+sendln
+
+sendln '*01N1'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=2'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report1 #13#10'01N1 Laser Off = '
+strconcat Report1 Temp2
+strconcat Report1 #13#10'01N1 Laser On = '
+
+sendln
+
+sendln '*01N1'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=2'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report2 Temp3
+strconcat Report2 #13#10'00O Shutter Open = '
+
+sendln
+
+sendln '*00O'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=2'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+strconcat Report2 #13#10'01O0 Shutter Closed = '
+strconcat Report2 Temp4
+strconcat Report2 #13#10'01O0 Shutter Open = '
+
+sendln
+
+sendln '*01O0'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=2'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+strconcat Report2 #13#10'01O1 Shutter Closed = '
+strconcat Report2 Temp5
+strconcat Report2 #13#10'01O1 Shutter Open = '
+
+sendln
+
+sendln '*01O1'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=2'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+messagebox Report 'Circuit Enable Wait State'
+messagebox Report1 'Circuit Enable Wait State'
+messagebox Report2 'Circuit Enable Wait State'
+
+;; Laser Power Wait Table
+:Laser_Wait
+
+messagebox 'Turn Laser Off and Close Shutter' 'Laser Power Wait State'
+
+Report = '00M Enabled = '
+Report1 = '00N Laser Off = '
+Report2 = '00O Shutter Closed = '
+
+sendln '*01M1'
+waitln 'M=1'
+
+sendln '*00M'
+recvln
+recvln
+strcompare inputstr 'M=1'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+strconcat Report #13#10'00M Disabled = '
+
+sendln
+sendln '*90G'
+waitln 'Force Circ Disable Fault'
+sendln
+
+sendln '*00M'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=7'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+
+strconcat Report #13#10'01M0 Disable = '
+
+sendln
+
+sendln '*01M0'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=0'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+
+strconcat Report #13#10'01M1 Enabled = '
+
+sendln '*01M1'
+recvln
+recvln
+strcompare inputstr 'M=1'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+strconcat Report #13#10'01M1 Disabled = '
+
+sendln
+sendln '*90G'
+waitln 'Force Circ Disable Fault'
+sendln
+
+sendln '*01M1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=7'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+
+sendln
+
+sendln '*00N'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=0'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report1 #13#10'00N Laser On = Not Tested'
+strconcat Report1 #13#10'01N0 Laser Off = '
+
+sendln
+
+sendln '*01N0'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=0'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report1 #13#10'01N0 Laser On = Not Tested'
+
+sendln
+
+sendln '*00O'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=0'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+sendln
+
+sendln '*01O0'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=0'
+if result = 0 then
+  ;;True
+  Temp0 = 'Correct'
+else
+  ;;False
+  Temp0 = inputstr
+endif
+
+sendln
+
+sendln '*01O1'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=5'
+if result = 0 then
+  ;;True
+  Temp1 = 'Correct'
+else
+  ;;False
+  Temp1 = inputstr
+endif
+
+strconcat Report1 #13#10'01N1 Circuit Enabled / Shutter Closed = '
+
+sendln
+
+sendln '*01N1'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=1'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+sendln '*01N0'
+waitln 'N=0'
+sendln '*00N'
+waitln 'N=0'
+
+strconcat Report1 #13#10'01N1 Circuit Disabled / Shutter Closed = '
+
+sendln
+sendln '*90G'
+waitln 'Force Circ Disable Fault'
+sendln
+
+sendln '*01N1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=5'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+
+messagebox 'Open Shutter' 'Laser Power Wait State'
+
+strconcat Report1 #13#10'01N1 Circuit Enabled / Shutter Open = '
+
+sendln
+sendln '*01N1'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=4'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report2 #13#10'00O Shutter Open = '
+
+sendln
+
+sendln '*00O'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=3'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+strconcat Report2 #13#10'01O0 Shutter Closed = '
+strconcat Report2 Temp0
+strconcat Report2 #13#10'01O0 Shutter Open = '
+
+sendln
+
+sendln '*01O0'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=3'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+strconcat Report2 #13#10'01O1 Shutter Closed = '
+strconcat Report2 Temp1
+strconcat Report2 #13#10'01O1 Shutter Open = '
+
+sendln
+
+sendln '*01O1'
+recvln
+recvln
+recvln
+strcompare inputstr 'O=3'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+messagebox Report 'Laser Power Wait State'
+messagebox Report1 'Laser Power Wait State'
+messagebox Report2 'Laser Power Wait State'
+
+;; Shutter Power Wait Table
+:Shutter_Wait
+
+;messagebox 'Close Shutter' 'Laser Power Wait State'
+
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Report = '00M Enabled = '
+Report1 = '00N Laser On = '
+Report2 = '00O Shutter Closed = '
+
+;sendln '*01N1'
+;waitln 'N=1'
+
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+goto Start_Here
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sendln '*00M'
+recvln
+recvln
+strcompare inputstr 'M=1'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+strconcat Report #13#10'00M Disabled = '
+
+sendln
+sendln '*90G'
+waitln 'Force Circ Disable Fault'
+sendln
+
+sendln '*00M'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=8'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+messagebox 'Power Off Laser' 'TEMP'
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+sendln '*01N1'
+waitln 'N=1'
+messagebox 'Power On Laser' 'TEMP'
+sendln '*00N'
+waitln 'N=1'
+
+strconcat Report #13#10'01M0 Disable = '
+
+sendln
+
+sendln '*01M0'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=0'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+messagebox 'Power Off Laser' 'TEMP'
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+sendln '*01N1'
+waitln 'N=1'
+messagebox 'Power On Laser' 'TEMP'
+sendln '*00N'
+waitln 'N=1'
+
+strconcat Report #13#10'01M1 Enabled = '
+
+sendln '*01M1'
+recvln
+recvln
+strcompare inputstr 'M=1'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+strconcat Report #13#10'01M1 Disabled = '
+
+sendln
+sendln '*90G'
+waitln 'Force Circ Disable Fault'
+sendln
+
+sendln '*01M1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=8'
+if result = 0 then
+  ;;True
+  strconcat Report 'Correct'
+else
+  ;;False
+  strconcat Report inputstr
+endif
+
+messagebox 'Power Off Laser' 'TEMP'
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+sendln '*01N1'
+waitln 'N=1'
+messagebox 'Power On Laser' 'TEMP'
+sendln '*00N'
+waitln 'N=1'
+
+sendln
+
+sendln '*00N'
+recvln
+recvln
+strcompare inputstr 'N=1'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report1 #13#10'00N Laser Off = Not Tested'
+strconcat Report1 #13#10'01N0 Power Off Laser = '
+
+sendln
+
+sendln '*01N0'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=0'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+sendln '*01N1'
+waitln 'N=1'
+sendln '*00N'
+waitln 'N=1'
+
+strconcat Report1 #13#10'01N1 Laser On = '
+
+sendln
+
+sendln '*01N1'
+recvln
+recvln
+recvln
+strcompare inputstr 'N=1'
+if result = 0 then
+  ;;True
+  strconcat Report1 'Correct'
+else
+  ;;False
+  strconcat Report1 inputstr
+endif
+
+strconcat Report1 #13#10'01N1 Laser Off = Not Tested'
+
+
+
+
+:Start_Here
+
+sendln '*00O'
+recvln
+recvln
+strcompare inputstr 'O=0'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+strconcat Report2 #13#10'00O Shutter Open = Not Tested'
+strconcat Report2 #13#10'01O0 Shutter Closed = '
+
+sendln '*01O0'
+recvln
+recvln
+strcompare inputstr 'O=0'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+strconcat Report2 #13#10'01O0 Shutter Open = Not Tested'
+strconcat Report2 #13#10'01O1 Circuit Disabled / Laser On = '
+
+sendln
+sendln '*90G'
+waitln 'Force Circ Disable Fault'
+sendln
+
+sendln '*01O1'
+recvln
+recvln
+recvln
+strcompare inputstr 'M=8'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+messagebox 'Power Off Laser' 'TEMP'
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sendln '*00M'
+waitln 'M=8'
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sendln '*01M1'
+waitln 'M=1'
+sendln '*00M'
+waitln 'M=1'
+sendln '*01N1'
+waitln 'N=1'
+messagebox 'Power On Laser' 'TEMP'
+sendln '*00N'
+waitln 'N=1'
+
+strconcat Report2 #13#10'01O1 Circuit Enabled / Laser Off = Not Tested'
+strconcat Report2 #13#10'01O1 Circuit Enabled / Laser On = '
+
+sendln
+
+sendln '*01O1'
+recvln
+recvln
+strcompare inputstr 'O=1'
+if result = 0 then
+  ;;True
+  strconcat Report2 'Correct'
+else
+  ;;False
+  strconcat Report2 inputstr
+endif
+
+mpause 500
+sendln '*01O1'
+mpause 500
+sendln '*01O1'
+mpause 500
+sendln '*01O1'
+mpause 500
+sendln '*01O1'
+mpause 500
+sendln '*01O1'
+mpause 500
+sendln '*01O1'
+waitln 'M=10'
+
+
+;messagebox Report 'Laser Power Wait State'
+;messagebox Report1 'Laser Power Wait State'
+messagebox Report2 'Laser Power Wait State'
+
+;messagebox inputstr 'Temp'
+;end
+
+goto end
+
+:No_Comm
+
+sendln 'No_Comm'
+goto end
+
+:PIC_Laser
+
+sendln '*01H1'
+waitln 'H=1'
+if result = 0 goto No_Comm
+sendln '*00H'
+waitln 'H=1'
+if result = 0 goto No_Comm
+goto Test_Laser
+
+:Confirm_State
+
+sendln '*00M'
+recvln
+recvln
+Enable_State = inputstr
+
+sendln '*00N'
+recvln
+recvln
+Laser_State = inputstr
+
+sendln '*00O'
+recvln
+recvln
+Shutter_State = inputstr
+
+return
+
+:Confirm_Enable_State
+
+call Confirm_State
+
+Confirm = ''
+
+strcompare Shutter_State 'O=0'
+if result = 0 then
+  ;;True
+else
+  ;;False
+  strconcat Confirm ' Shutter_Error'
+  sendln '*01O0'
+  wait 'O=0'
+  if result = 0 goto No_Comm
+endif
+
+strcompare Laser_State 'N=0'
+if result = 0 then
+  ;;True
+else
+  ;;False
+  strconcat Confirm ' Laser_Error'
+  sendln '*01N0'
+  wait 'N=0'
+  if result = 0 goto No_Comm
+endif
+
+strcompare Enable_State 'M=0'
+if result = 0 then
+  ;;True
+else
+  ;;False
+  strconcat Confirm ' Enabled_Error'
+  sendln '*01M0'
+  wait 'M=0'
+  if result = 0 goto No_Comm
+endif
+
+return
+
+:Confirm_Laser_State
+
+call Confirm_State
+
+Confirm = ''
+
+strcompare Shutter_State 'O=0'
+if result = 0 then
+  ;;True
+else
+  ;;False
+  strconcat Confirm ' Shutter_Error'
+  sendln '*01O0'
+  wait 'O=0'
+  if result = 0 goto No_Comm
+endif
+
+strcompare Laser_State 'N=0'
+if result = 0 then
+  ;;True
+else
+  ;;False
+  strconcat Confirm ' Laser_Error'
+  sendln '*01N0'
+  wait 'N=0'
+  if result = 0 goto No_Comm
+endif
+
+strcompare Enable_State 'M=1'
+if result = 0 then
+  ;;True
+else
+  ;;False
+  strconcat Confirm ' Disabled_Error'
+  sendln '*01M1'
+  wait 'M=1'
+  if result = 0 goto No_Comm
+endif
+
+return
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; END OF MACRO
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+:end

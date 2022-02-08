@@ -1,0 +1,292 @@
+<?xml version="1.1" ?>
+<settings>
+  <global>
+    <!-- ~~~~~~ Trust Set List ~~~~~ -->
+    <!-- Titles for sets of trusts that can be used under different situations -->
+    <!-- Any string may be used as a title of a trust set; separate each title with a comma (,) -->
+    <!--   Example: RDM, SAM, THF -->
+    <!-- ** base-set is assumed to exist so it does not need to be included in the trust_set list ** -->
+    <trust_sets>
+      <!-- ~~~~~~ Trust Sets ~~~~~ -->
+      <!-- ~~~~~~ Base Set Trust Set ~~~~~ -->
+      <!-- ** Must include the "base-set", all other sets are optional ** -->
+      <base_set>
+        <!-- Order Position -->
+        <order_position>1</order_position>
+        <!-- Set name -->
+        <name>base_set</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          aagk, zeidii, tenzen, ayame, shantottoii
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru, ulmia, shantottoii, selh'teus
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          gessho, trion, ulmia, joachim, kupofried
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+          yoran-oran(uc), kupipi
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+          shantottoii, kupofried, selh'teus
+        </trust_5>
+      </base_set>
+      <!-- ~~~~~~ BRD Trust Set ~~~~~ -->
+      <brd>
+        <!-- Order Position -->
+        <order_position>2</order_position>
+        <!-- Set name -->
+        <name>brd</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          aagk, zeidii, tenzen, ayame, shantottoii
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru, ulmia, shantottoii, selh'teus
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          gessho, trion, ulmia, joachim, kupofried
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+          yoran-oran(uc), kupipi
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+          shantottoii, kupofried, selh'teus
+        </trust_5>
+      </brd>
+      <!-- ~~~~~~ RDM Trust Set ~~~~~ -->
+      <rdm>
+        <!-- Order Position -->
+        <order_position>3</order_position>
+        <!-- Set name -->
+        <name>rdm</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          aagk, zeidii, tenzen, ayame, shantottoii
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru, ulmia, shantottoii, selh'teus
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          gessho, trion, ulmia, joachim, kupofried
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+          yoran-oran(uc), kupipi
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+          shantottoii, kupofried, selh'teus
+        </trust_5>
+      </rdm>
+      <!-- ~~~~~~ SAM Trust Set ~~~~~ -->
+      <sam>
+        <!-- Order Position -->
+        <order_position>4</order_position>
+        <!-- Set name -->
+        <name>sam</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          aagk, zeidii, tenzen, ayame, shantottoii
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru, ulmia, shantottoii, selh'teus
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          gessho, trion, ulmia, joachim, kupofried
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+          yoran-oran(uc), kupipi
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+          shantottoii, kupofried, selh'teus
+        </trust_5>
+      </sam>
+      <!-- ~~~~~~ THF Trust Set ~~~~~ -->
+      <thf>
+        <!-- Order Position -->
+        <order_position>5</order_position>
+        <!-- Set name -->
+        <name>thf</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          aagk, zeidii, tenzen, ayame, shantottoii
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru, ulmia, shantottoii, selh'teus
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          gessho, trion, ulmia, joachim, kupofried
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+          yoran-oran(uc), kupipi
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+          shantottoii, kupofried, selh'teus
+        </trust_5>
+      </thf>
+      <!-- ~~~~~~ THF-FARM Trust Set ~~~~~ -->
+      <thf-farm>
+        <!-- Order Position -->
+        <order_position>6</order_position>
+        <!-- Set name -->
+        <name>thf-farm</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          ulmia
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          yoran-oran(uc), kupipi
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+        </trust_5>
+      </thf-farm>
+      <!-- ~~~~~~ BLM Trust Set ~~~~~ -->
+      <blm>
+        <!-- Order Position -->
+        <order_position>7</order_position>
+        <!-- Set name -->
+        <name>blm</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          aagk, zeidii, tenzen, ayame, shantottoii
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru, ulmia, shantottoii, selh'teus
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          gessho, trion, ulmia, joachim, kupofried
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+          yoran-oran(uc), kupipi
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+          shantottoii, kupofried, selh'teus
+        </trust_5>
+      </blm>
+      <!-- ~~~~~~ NIN Trust Set ~~~~~ -->
+      <nin>
+        <!-- Order Position -->
+        <order_position>8</order_position>
+        <!-- Set name -->
+        <name>nin</name>
+        <!-- Trust position #1 -->
+        <trust_1>
+          aagk, zeidii, tenzen, ayame, shantottoii
+        </trust_1>
+        <!-- Trust position #2 -->
+        <trust_2>
+          koru-moru, ulmia, shantottoii, selh'teus
+        </trust_2>
+        <!-- Trust position #3 -->
+        <trust_3>
+          gessho, trion, ulmia, joachim, kupofried
+        </trust_3>
+        <!-- Trust position #4 -->
+        <trust_4>
+          yoran-oran(uc), kupipi
+        </trust_4>
+        <!-- Trust position #5 -->
+        <trust_5>
+          shantottoii, kupofried, selh'teus
+        </trust_5>
+      </nin>
+    </trust_sets>
+    <!-- ~~~~~~ Trust Binds ~~~~~ -->
+    <!-- Bind Information -->
+    <!-- Binds used to control the TrustHelper Addon -->
+    <!-- ** All binds are in the windower format ** -->
+    <binds>
+      <!-- Trust position #1 binds -->
+      <trust_1>
+        <cast_bind>^f7</cast_bind>
+        <dismiss_bind>!f7</dismiss_bind>
+        <cycle_bind>^!f7</cycle_bind>
+        <display_bind>~f7</display_bind>
+      </trust_1>
+      <!-- Trust position #2 binds -->
+      <trust_2>
+        <cast_bind>^f8</cast_bind>
+        <dismiss_bind>!f8</dismiss_bind>
+        <cycle_bind>^!f8</cycle_bind>
+        <display_bind>~f8</display_bind>
+      </trust_2>
+      <!-- Trust position #3 binds -->
+      <trust_3>
+        <cast_bind>^f9</cast_bind>
+        <dismiss_bind>!f9</dismiss_bind>
+        <cycle_bind>^!f9</cycle_bind>
+        <display_bind>~f9</display_bind>
+      </trust_3>
+      <!-- Trust position #4 binds -->
+      <trust_4>
+        <cast_bind>^f10</cast_bind>
+        <dismiss_bind>!f10</dismiss_bind>
+        <cycle_bind>^!f10</cycle_bind>
+        <display_bind>~f10</display_bind>
+      </trust_4>
+      <!-- Trust position #5 binds -->
+      <trust_5>
+        <cast_bind>^f11</cast_bind>
+        <dismiss_bind>!f11</dismiss_bind>
+        <cycle_bind>^!f11</cycle_bind>
+        <display_bind>~f11</display_bind>
+      </trust_5>
+      <!-- Cycle Set Bind -->
+      <!-- ** May be set to nil if no bind is to be loaded ** -->
+      <cycle_set_bind>!^f6</cycle_set_bind>
+      <!-- Display Set Bind -->
+      <!-- Used to trigger TrustHelper to display the currently loaded trust set -->
+      <!-- ** May be set to nil if no bind is to be loaded ** -->
+      <display_set_bind>~f6</display_set_bind>
+      <!-- Cast All Bind -->
+      <!-- Used to trigger TrustHelper to cast all possible trusts in the proper trust order -->
+      <!-- ** May be set to nil if no bind is to be loaded ** -->
+      <cast_all_bind>^f6</cast_all_bind>
+      <!-- Dismiss All Bind -->
+      <!-- Used to trigger TrustHelper to dismiss all summoned trusts -->
+      <!-- ** May be set to nil if no bind is to be loaded ** -->
+      <dismiss_all_bind>!f6</dismiss_all_bind>
+      <!-- Echo Bind -->
+      <!-- Causes TrustHelper to send an echo to the players chat window whenever a TrustHelper command is triggered -->
+      <!-- ** May be set to nil if no bind is to be loaded ** -->
+      <echo>true</echo>
+      <!-- Help Bind -->
+      <!-- Causes TrustHelper to send an echo to the players chat window containing all possible TrustHelper commands -->
+      <!-- ** May be set to nil if no bind is to be loaded ** -->
+      <help_bind>!q</help_bind>
+    </binds>
+  </global>
+</settings>
